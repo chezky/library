@@ -21,6 +21,11 @@ func main() {
 	r := mux.NewRouter()
 
 	r.HandleFunc("/new", routes.NewBookHandler)
+	r.HandleFunc("/get", routes.GetBooksHandler)
+	r.HandleFunc("/delete", routes.DeleteBookHandler)
+	r.HandleFunc("/checkout", routes.CheckOutBookHandler)
+	r.HandleFunc("/get/id", routes.GetBookByIDHandler)
+	r.HandleFunc("/update", routes.UpdateBooksHandler)
 
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 	http.Handle("/", r)

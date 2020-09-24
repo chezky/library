@@ -789,9 +789,9 @@ true posixrules
     <database id="2" parent="1" name="library">
       <ObjectId>49329</ObjectId>
       <Owner>postgres</Owner>
-      <IntrospectionStateNumber>1685</IntrospectionStateNumber>
+      <IntrospectionStateNumber>1726</IntrospectionStateNumber>
       <Current>1</Current>
-      <Relations>sequence|table|49330|49332|1
+      <Relations>sequence|table|49371|49364|3
 </Relations>
     </database>
     <database id="3" parent="1" name="postgres">
@@ -852,7 +852,7 @@ true posixrules
       <Comment>standard public schema</Comment>
       <StateNumber>276</StateNumber>
       <Owner>postgres</Owner>
-      <IntrospectionStateNumber>1686</IntrospectionStateNumber>
+      <IntrospectionStateNumber>1727</IntrospectionStateNumber>
       <Current>1</Current>
     </schema>
     <access-method id="17" parent="2" name="heap">
@@ -923,55 +923,66 @@ true posixrules
     <language id="27" parent="2" name="plpgsql"/>
     <language id="28" parent="2" name="sql"/>
     <sequence id="29" parent="16" name="books_id_seq">
-      <ObjectId>49330</ObjectId>
+      <ObjectId>49371</ObjectId>
       <Owner>postgres</Owner>
-      <StateNumber>1684</StateNumber>
+      <StateNumber>1699</StateNumber>
       <DataType>integer|0s</DataType>
     </sequence>
     <table id="30" parent="16" name="books">
-      <ObjectId>49332</ObjectId>
+      <ObjectId>49364</ObjectId>
       <Owner>postgres</Owner>
-      <StateNumber>1684</StateNumber>
+      <StateNumber>1725</StateNumber>
     </table>
-    <column id="31" parent="30" name="id">
+    <column id="31" parent="30" name="title">
       <Position>1</Position>
-      <DataType>integer|0s</DataType>
+      <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>1684</StateNumber>
-      <DefaultExpression>nextval(&apos;books_id_seq&apos;::regclass)</DefaultExpression>
-      <TypeId>23</TypeId>
+      <StateNumber>1696</StateNumber>
+      <TypeId>25</TypeId>
     </column>
     <column id="32" parent="30" name="author">
       <Position>2</Position>
       <DataType>text|0s</DataType>
-      <StateNumber>1684</StateNumber>
-      <DefaultExpression>&apos;&apos;::text</DefaultExpression>
+      <StateNumber>1696</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <column id="33" parent="30" name="title">
+    <column id="33" parent="30" name="id">
       <Position>3</Position>
-      <DataType>text|0s</DataType>
+      <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
-      <StateNumber>1684</StateNumber>
-      <TypeId>25</TypeId>
+      <StateNumber>1699</StateNumber>
+      <DefaultExpression>nextval(&apos;books_id_seq&apos;::regclass)</DefaultExpression>
+      <TypeId>23</TypeId>
     </column>
     <column id="34" parent="30" name="available">
       <Position>4</Position>
       <DataType>boolean|0s</DataType>
-      <StateNumber>1684</StateNumber>
+      <StateNumber>1702</StateNumber>
       <DefaultExpression>true</DefaultExpression>
       <TypeId>16</TypeId>
     </column>
-    <index id="35" parent="30" name="books_pkey">
-      <ObjectId>49341</ObjectId>
-      <StateNumber>1684</StateNumber>
+    <column id="35" parent="30" name="customer">
+      <Position>5</Position>
+      <DataType>text|0s</DataType>
+      <StateNumber>1724</StateNumber>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="36" parent="30" name="ts">
+      <Position>6</Position>
+      <DataType>bigint|0s</DataType>
+      <StateNumber>1725</StateNumber>
+      <TypeId>20</TypeId>
+    </column>
+    <index id="37" parent="30" name="books_pkey">
+      <ObjectId>49374</ObjectId>
+      <StateNumber>1699</StateNumber>
       <ColNames>id</ColNames>
       <Unique>1</Unique>
       <Primary>1</Primary>
     </index>
-    <key id="36" parent="30" name="books_pkey">
-      <ObjectId>49342</ObjectId>
-      <StateNumber>1684</StateNumber>
+    <key id="38" parent="30" name="books_pkey">
+      <ObjectId>49375</ObjectId>
+      <StateNumber>1699</StateNumber>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
       <UnderlyingIndexName>books_pkey</UnderlyingIndexName>
