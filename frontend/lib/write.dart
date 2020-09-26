@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:nfc_in_flutter/nfc_in_flutter.dart';
 import 'dart:async';
 import 'dart:io';
-import 'package:global_configuration/global_configuration.dart';
 
 class RecordEditor {
   TextEditingController mediaTypeController;
   TextEditingController payloadController;
 
   RecordEditor() {
-    mediaTypeController = TextEditingController();
     payloadController = TextEditingController();
   }
 }
@@ -33,7 +31,7 @@ class _WriteExampleScreenState extends State<WriteExampleScreen> {
   void _write(BuildContext context) async {
     List<NDEFRecord> records = _records.map((record) {
       return NDEFRecord.type(
-        record.mediaTypeController.text,
+        "text",
         record.payloadController.text,
       );
     }).toList();
@@ -88,12 +86,6 @@ class _WriteExampleScreenState extends State<WriteExampleScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text("Record", style: Theme.of(context).textTheme.body2),
-                  TextFormField(
-                    controller: record.mediaTypeController,
-                    decoration: InputDecoration(
-                      hintText: "Media type",
-                    ),
-                  ),
                   TextFormField(
                     controller: record.payloadController,
                     decoration: InputDecoration(

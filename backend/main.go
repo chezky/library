@@ -26,6 +26,7 @@ func main() {
 	r.HandleFunc("/checkout", routes.CheckOutBookHandler)
 	r.HandleFunc("/get/id", routes.GetBookByIDHandler)
 	r.HandleFunc("/update", routes.UpdateBooksHandler)
+	r.HandleFunc("/search/title", routes.SearchByTitleHandler)
 
 	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
 	http.Handle("/", r)

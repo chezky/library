@@ -20,10 +20,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4474c8e1-9877-4707-a4e1-70e84f359c0c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/frontend/assets/config.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/lib/app.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/frontend/lib/home.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/lib/add.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/lib/details.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/db/db.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/db/db.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/main.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/routes/routes.go" beforeDir="false" afterPath="$PROJECT_DIR$/backend/routes/routes.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/api.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/api.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/home.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/nav.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/nav.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/search.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/search.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/lib/write.dart" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/lib/write.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,7 +65,7 @@
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
     <property name="go.tried.to.enable.integration.vgo.integrator" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../Change/backend" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -94,5 +101,25 @@
       <screen x="0" y="0" width="1280" height="680" />
     </state>
     <state x="234" y="0" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1280.680@0.0.1280.680" timestamp="1600841038414" />
+    <state x="422" y="95" key="FileChooserDialogImpl" timestamp="1601065947130">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state x="422" y="95" key="FileChooserDialogImpl/0.0.1280.680@0.0.1280.680" timestamp="1601065947130" />
+    <state width="845" height="163" key="GridCell.Tab.0.bottom" timestamp="1601067013087">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="845" height="163" key="GridCell.Tab.0.bottom/0.0.1280.680@0.0.1280.680" timestamp="1601067013087" />
+    <state width="845" height="163" key="GridCell.Tab.0.center" timestamp="1601067013087">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="845" height="163" key="GridCell.Tab.0.center/0.0.1280.680@0.0.1280.680" timestamp="1601067013087" />
+    <state width="845" height="163" key="GridCell.Tab.0.left" timestamp="1601067013086">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="845" height="163" key="GridCell.Tab.0.left/0.0.1280.680@0.0.1280.680" timestamp="1601067013086" />
+    <state width="845" height="163" key="GridCell.Tab.0.right" timestamp="1601067013087">
+      <screen x="0" y="0" width="1280" height="680" />
+    </state>
+    <state width="845" height="163" key="GridCell.Tab.0.right/0.0.1280.680@0.0.1280.680" timestamp="1601067013087" />
   </component>
 </project>

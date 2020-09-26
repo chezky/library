@@ -36,7 +36,7 @@ func NewBookHandler(w http.ResponseWriter, r *http.Request)  {
 	}
 
 	fmt.Println(fmt.Sprintf("Title is: %s, author is %s", b.Title, b.Author))
-	fmt.Fprint(w, "success")
+	fmt.Fprint(w, fmt.Sprintf("%d", b.ID))
 }
 
 func DeleteBookHandler(w http.ResponseWriter, r *http.Request)  {
@@ -141,6 +141,39 @@ func UpdateBooksHandler(w http.ResponseWriter, r *http.Request)  {
 	b.UpdateListBooks()
 
 	fmt.Fprint(w, "success")
+}
+
+//UpdateBooksHandler either returns or checks out a list of book. Requires a name to be given when the books are being checked out.
+func SearchByTitleHandler(w http.ResponseWriter, r *http.Request)  {
+	var s db.Search
+
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		log.Println("error reading body", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := json.Unmarshal(body, &s); err != nil {
+		fmt.Println("error unmarshalling search books by title", err)
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	if err := s.SearchByTitle(); err != nil {
+		fmt.Println("error searching by title for query", s.Query, err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	res, err := json.Marshal(s.Books)
+	if err != nil {
+		fmt.Println("error marshaling in books for search by title", s.Query, err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprint(w, string(res))
 }
 
 func GetBooksHandler(w http.ResponseWriter, r *http.Request)  {

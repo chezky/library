@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:frontend/add.dart';
 import 'package:frontend/home.dart';
 import 'package:frontend/search.dart';
+import 'package:nfc_in_flutter/nfc_in_flutter.dart';
 
 class Nav extends StatefulWidget {
   _NavState createState() => _NavState();
@@ -15,9 +19,9 @@ class _NavState extends State<Nav> {
       currentIndex: _page,
       elevation: 0,
       items: [
-        BottomNavigationBarItem(icon: Icon(Icons.home_rounded, size: 30,color: Colors.orange,), title: Text("")),
-        BottomNavigationBarItem(icon: Icon(Icons.search_rounded, size: 30,color: Colors.orange), title: Text("")),
-//        Icon(Icons.person_rounded, size: 30,color: Colors.white),
+        BottomNavigationBarItem(icon: Icon(Icons.home_rounded, size: 30,color: Colors.orange[500],), title: Text("")),
+        BottomNavigationBarItem(icon: Icon(Icons.search_rounded, size: 30,color: Colors.orange[500]), title: Text("")),
+        BottomNavigationBarItem(icon: Icon(Icons.add_rounded, size: 30,color: Colors.orange[500]), title: Text("")),
       ],
       onTap: (index) {
         print(index);
@@ -31,6 +35,9 @@ class _NavState extends State<Nav> {
             break;
           case 1:
             _navigatorKey.currentState.pushNamed('/search');
+            break;
+          case 2:
+            _navigatorKey.currentState.pushNamed('/add');
             break;
           default:
             _navigatorKey.currentState.pushNamed('/home');
@@ -57,6 +64,9 @@ class _NavState extends State<Nav> {
               break;
             case '/search':
               builder = (BuildContext context) => SearchPage();
+              break;
+            case '/add':
+              builder = (BuildContext context) => AddPage();
               break;
             default:
               throw Exception('Invalid route: ${settings.name}');

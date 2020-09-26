@@ -19,6 +19,7 @@ type Book struct {
 	Author string `json:"author"`
 	Available bool `json:"available"`
 	Customer string `json:"customer"`
+	TimeStamp int64 `json:"time_stamp"`
 }
 
 type BookList struct {
@@ -26,6 +27,11 @@ type BookList struct {
 	Name string `json:"name"`
 	Available bool `json:"available"`
 	TimeStamp int64 `json:"time_stamp"`
+}
+
+type Search struct {
+	Books []Book `json:"books"`
+	Query string `json:"query"`
 }
 
 func Start() {
@@ -49,9 +55,10 @@ func (b *Book) NewBook() error {
 	msg := `
 	INSERT INTO books (title, author)
 	VALUES ($1, $2)		
+	RETURNING id
 	`
 
-	if _, err := db.Exec(msg, b.Title, b.Author); err != nil {
+	if err := db.QueryRow(msg, b.Title, b.Author).Scan(&b.ID); err != nil {
 		return err
 	}
 
@@ -80,13 +87,25 @@ func (b *Book) GetBookByID() error  {
 	msg := `SELECT title, available, author FROM books WHERE id = $1`
 
 	if err := db.QueryRow(msg, b.ID).Scan(&b.Title, &b.Available, &b.Author); err != nil {
-		return err
+		if !strings.Contains(err.Error(), "converting NULL to string") {
+			return err
+		}
 	}
+
+	if !b.Available {
+		msg = `SELECT customer, ts FROM books WHERE id = $1`
+		if err := db.QueryRow(msg, b.ID).Scan(&b.Customer, &b.TimeStamp); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
 func (b *BookList) UpdateListBooks() {
 	b.TimeStamp = time.Now().Unix()
+
+	fmt.Println(b)
 
 	for _, id := range b.IDs {
 		msg := `UPDATE books SET available = $1, customer = $2, ts = $3 WHERE id = $4`
@@ -96,10 +115,42 @@ func (b *BookList) UpdateListBooks() {
 	}
 }
 
+func (s *Search) SearchByTitle() error  {
+	msg := `SELECT title, id, available, author FROM books WHERE title ILIKE $1 order by title`
+
+	rows, err := db.Query(msg, "%"+s.Query+"%")
+	if err != nil {
+		fmt.Println("error getting books", err)
+		return err
+	}
+
+	for rows.Next() {
+		var book Book
+		if err := rows.Scan(&book.Title, &book.ID, &book.Available, &book.Author); err != nil {
+			if !strings.Contains(err.Error(), "converting NULL to string is unsupported") {
+				fmt.Println("error scanning get search by title", err)
+			}
+		}
+
+		if !book.Available {
+			msg = `SELECT customer FROM books WHERE id = $1`
+			if err := db.QueryRow(msg, book.ID).Scan(&book.Customer); err != nil {
+				if !strings.Contains(err.Error(), "converting NULL to string is unsupported") {
+					fmt.Println("error getting customer for book ID", book.ID, err)
+				}
+			}
+		}
+		s.Books = append(s.Books, book)
+	}
+
+	return nil
+}
+
 func GetBooks() ([]Book, error) {
 	var b []Book
 
 	msg := `SELECT title, id, available, author FROM books order by Title`
+
 	rows, err := db.Query(msg)
 	if err != nil {
 		fmt.Println("error getting books", err)
@@ -116,8 +167,8 @@ func GetBooks() ([]Book, error) {
 		}
 
 		if !book.Available {
-			msg = `SELECT customer FROM books WHERE id = $1`
-			if err := db.QueryRow(msg, book.ID).Scan(&book.Customer); err != nil {
+			msg = `SELECT customer, ts FROM books WHERE id = $1`
+			if err := db.QueryRow(msg, book.ID).Scan(&book.Customer, &book.TimeStamp); err != nil {
 				if !strings.Contains(err.Error(), "converting NULL to string is unsupported") {
 					fmt.Println("error getting customer for book ID", book.ID, err)
 				}
