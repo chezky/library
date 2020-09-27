@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/api.dart';
+import 'package:frontend/models/scannedBooks.dart';
 import 'package:nfc_in_flutter/nfc_in_flutter.dart';
+import 'package:provider/provider.dart';
 
 class DetailScreen extends StatefulWidget {
   DetailScreen({this.tag, this.book});
@@ -11,9 +13,6 @@ class DetailScreen extends StatefulWidget {
 }
 
 class _DetailsScreenState extends State<DetailScreen> {
-  List _records = [];
-
-
   Widget _title() {
     return Container(
       padding: EdgeInsets.fromLTRB(40,50,40,20),
@@ -77,21 +76,25 @@ class _DetailsScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Icon(Icons.arrow_back_rounded),
+    return new WillPopScope(
+      onWillPop: _onWillPop,
+      child: Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            context.read<ScannedBooks>().add(widget.book);
+            Navigator.pop(context);
+          },
+          heroTag: null,
+          child: Icon(Icons.add_rounded),
         ),
-      ),
-      body: WillPopScope(
-        onWillPop: () async {
-          Navigator.of(context).pop(false);
-          Navigator.pop(context);
-          return false;
-        },
-        child: SafeArea(
+        appBar: AppBar(
+          elevation: 0,
+          leading: IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: Icon(Icons.arrow_back_rounded),
+          ),
+        ),
+        body: SafeArea(
           child: Center(
             child: Hero(
               tag: widget.tag,
@@ -114,6 +117,7 @@ class _DetailsScreenState extends State<DetailScreen> {
   _updateBooks() async{
     List l = [widget.book];
     await API(context).updateBooks("", l);
+    await API(context).getAllBooks();
     Navigator.pop(context);
   }
 
@@ -132,5 +136,10 @@ class _DetailsScreenState extends State<DetailScreen> {
       content: Text("Written Successfully"),
     ));
     // Navigator.pop(context);
+  }
+
+  Future<bool> _onWillPop() async {
+    Navigator.pop(context);
+    return false;
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/api.dart';
+import 'package:frontend/models/listBooks.dart';
+import 'package:provider/provider.dart';
 
 import 'details.dart';
 
@@ -11,12 +13,11 @@ class SearchPage extends StatefulWidget{
 class _SearchPageState extends State<SearchPage> {
   final GlobalKey<AnimatedListState> listKey = GlobalKey<AnimatedListState>();
   TextEditingController searchController = TextEditingController();
-  List _books = [];
 
   @override
   void initState() {
     super.initState();
-    _getAllBooks();
+    API(context).getAllBooks();
   }
 
   @override
@@ -31,7 +32,7 @@ class _SearchPageState extends State<SearchPage> {
                 margin: EdgeInsets.fromLTRB(40, 30, 40, 10),
                 child: TextField(
                   controller: searchController,
-                  onChanged: (s) => _getByTitle(),
+                  onChanged: (s) => API(context).getByTitle(searchController.text),
                   decoration: InputDecoration(
                     hintText: "Search for a title",
                     floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -43,19 +44,23 @@ class _SearchPageState extends State<SearchPage> {
               ),
               Container(
                 height: MediaQuery.of(context).size.height * 0.8,
-                child: ListView.builder(
-                  itemCount: _books.length,
-                  itemBuilder: (BuildContext context, int idx) {
-                    return Hero(
-                      tag: "hero$idx",
-                      child: ListTile(
-                        onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) {
-                          return DetailScreen(tag: "hero$idx", book: _books[idx],);
-                        })),
-                        title: Text(_books[idx]["title"]),
-                        subtitle: Text(_books[idx]["author"]),
-                        trailing: _books[idx]["available"] ? Icon(Icons.check, color: Colors.green,) : Icon(Icons.cancel_outlined, color: Colors.red,),
-                      ),
+                child: Consumer<ListBooks>(
+                  builder: (context, lb, wdgt) {
+                    return ListView.builder(
+                      itemCount: lb.books.length,
+                      itemBuilder: (BuildContext context, int idx) {
+                        return Hero(
+                          tag: "hero$idx",
+                          child: ListTile(
+                            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) {
+                              return DetailScreen(tag: "hero$idx", book: lb.books[idx],);
+                            })),
+                            title: Text(lb.books[idx]["title"]),
+                            subtitle: Text(lb.books[idx]["author"]),
+                            trailing: lb.books[idx]["available"] ? Icon(Icons.check, color: Colors.green,) : Icon(Icons.cancel_outlined, color: Colors.red,),
+                          ),
+                        );
+                      },
                     );
                   },
                 ),
@@ -65,21 +70,5 @@ class _SearchPageState extends State<SearchPage> {
         ),
       ),
     );
-  }
-
-  _getByTitle() async {
-    await API(context).getByTitle(searchController.text, _books);
-    print(_books);
-    setState(() {
-      _books = _books;
-    });
-  }
-
-  _getAllBooks() async {
-    await API(context).getAllBooks(_books);
-    print(_books);
-    setState(() {
-      _books = _books;
-    });
   }
 }

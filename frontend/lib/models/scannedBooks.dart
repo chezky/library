@@ -6,6 +6,13 @@ class ScannedBooks extends ChangeNotifier {
   List<Map> get books => _books;
 
   void add(Map b) {
+    for(var i=0; i<books.length; i++){
+      if (books[i]["id"] == b["id"]) {
+        print("books already in list");
+        return;
+      }
+    }
+
     _books.add(b);
     // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();

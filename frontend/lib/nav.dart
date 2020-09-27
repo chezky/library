@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:frontend/add.dart';
 import 'package:frontend/api.dart';
-import 'package:frontend/home.dart';
-import 'package:frontend/search.dart';
+import 'package:frontend/pages/add.dart';
+import 'package:frontend/pages/home.dart';
+import 'package:frontend/pages/search.dart';
 import 'package:nfc_in_flutter/nfc_in_flutter.dart';
 
 class Nav extends StatefulWidget {
@@ -20,6 +20,7 @@ class _NavState extends State<Nav> {
     return BottomNavigationBar(
       currentIndex: _page,
       elevation: 0,
+      backgroundColor: Colors.purple[600],
       items: [
         BottomNavigationBarItem(icon: Icon(Icons.home_rounded, size: 30,color: Colors.orange[500],), title: Text("")),
         BottomNavigationBarItem(icon: Icon(Icons.search_rounded, size: 30,color: Colors.orange[500]), title: Text("")),

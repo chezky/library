@@ -60,7 +60,7 @@ class _AddPageState extends State<AddPage> {
 
   _addBook() async {
     FocusScope.of(context).unfocus();
-    id = await API(context).addBook(titleControl.text, authorControl.text);
+    id = await API(context).addBook(_parseWord(titleControl.text), _parseWord(authorControl.text));
     Scaffold.of(context).showSnackBar(SnackBar(content: Text("Successfully added")));
 
     setState(() {
@@ -87,5 +87,31 @@ class _AddPageState extends State<AddPage> {
       content: Text("Written Successfully"),
     ));
     // Navigator.pop(context);
+  }
+
+  String _parseWord(String txt) {
+    String newTxt="";
+    List<String> badWords = ["or", "are", "on", "a", "the", "in"];
+
+    List<String> words = txt.split(" ");
+    for(var i=0; i<words.length; i++) {
+      if (i == 0) {
+        newTxt = words[i][0].toUpperCase() + words[i].substring(1);
+      } else {
+        bool bad = false;
+        for(var j=0; j<badWords.length; j++) {
+          print(j);
+          if (words[i].toLowerCase() == badWords[j]) {
+            bad = true;
+          }
+        }
+        if(!bad) {
+          words[i] = words[i][0].toUpperCase() + words[i].substring(1);
+        }
+        newTxt ='$newTxt ${words[i]}';
+      }
+    }
+
+    return newTxt;
   }
 }

@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/api.dart';
-import 'package:frontend/write.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:nfc_in_flutter/nfc_in_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'details.dart';
-import 'models/scannedBooks.dart';
+import '../models/scannedBooks.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -66,10 +65,6 @@ class _NFCReaderState extends State<HomePage> {
                       )
                   ),
                 ),
-              ),
-              RaisedButton(
-                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => WriteExampleScreen())),
-                child: Text("Write to tag"),
               ),
               Container(
                 height: 300,

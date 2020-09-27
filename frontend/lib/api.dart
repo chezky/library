@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/models/listBooks.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -27,34 +28,34 @@ class API {
     }
 
     Map dr = jsonDecode(res.body);
-    for(var i=0; i<books.length; i++){
-      if (books[i]["id"] == dr["id"]) {
-        print("books already in list");
-        return;
-      }
-    }
     context.read<ScannedBooks>().add(dr);
   }
 
-  getByTitle(String query, List books) async {
+  getByTitle(String query) async {
+    if (query == "") {
+      getAllBooks();
+      return;
+    }
+
     String content = '{"query":"$query"}';
     var res = await http.post("${cfg.get("host")}/search/title", body: content);
     print("length of search by title  ${res.body.length}");
     print(res.body);
     var dcdc = jsonDecode(res.body);
+    context.read<ListBooks>().clear();
     if (dcdc != null) {
-      books.clear();
-      books.addAll(dcdc);
+      context.read<ListBooks>().add(dcdc);
     }
   }
 
-  getAllBooks(List books) async {
+  getAllBooks() async {
     var res = await http.post("${cfg.get("host")}/get", body: '');
     print("length of get all books  ${res.body.length}");
 
     var dcdc = jsonDecode(res.body);
-    books.addAll(dcdc);
-  }
+    context.read<ListBooks>().clear();
+    context.read<ListBooks>().add(dcdc);
+    }
 
   updateBooks(String name, List books) async {
     if (books.isEmpty) {
