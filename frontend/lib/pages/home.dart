@@ -25,6 +25,7 @@ class _NFCReaderState extends State<HomePage> {
         .then((bool isSupported) {
       setState(() {
         _supportsNFC = isSupported;
+        API(context).getAllBooks();
       });
     });
   }

@@ -44,6 +44,7 @@ class _SearchPageState extends State<SearchPage> {
               ),
               Container(
                 height: MediaQuery.of(context).size.height * 0.8,
+                padding: EdgeInsets.only(bottom: 45),
                 child: Consumer<ListBooks>(
                   builder: (context, lb, wdgt) {
                     return ListView.builder(

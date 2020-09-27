@@ -93,7 +93,7 @@ class _AddPageState extends State<AddPage> {
     String newTxt="";
     List<String> badWords = ["or", "are", "on", "a", "the", "in"];
 
-    List<String> words = txt.split(" ");
+    List<String> words = txt.trim().split(" ");
     for(var i=0; i<words.length; i++) {
       if (i == 0) {
         newTxt = words[i][0].toUpperCase() + words[i].substring(1);
@@ -106,6 +106,7 @@ class _AddPageState extends State<AddPage> {
           }
         }
         if(!bad) {
+          print("word is ${words[i]}");
           words[i] = words[i][0].toUpperCase() + words[i].substring(1);
         }
         newTxt ='$newTxt ${words[i]}';
