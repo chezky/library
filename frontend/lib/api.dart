@@ -2,7 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
+import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+
+import 'models/scannedBooks.dart';
 
 class API {
   API(this.context);
@@ -11,7 +14,9 @@ class API {
 
   GlobalConfiguration cfg = GlobalConfiguration();
 
-  getBookByID(String msg, List<Map> books) async {
+  getBookByID(String msg) async {
+    var books = context.read<ScannedBooks>().books;
+
     var content = '{"id":${int.parse(msg)}}';
     var res = await http.post("${cfg.get("host")}/get/id", body: content);
     print("res for get bookByID is  ${res.body}");
@@ -28,7 +33,7 @@ class API {
         return;
       }
     }
-    books.add(dr);
+    context.read<ScannedBooks>().add(dr);
   }
 
   getByTitle(String query, List books) async {
@@ -52,6 +57,10 @@ class API {
   }
 
   updateBooks(String name, List books) async {
+    if (books.isEmpty) {
+      books = context.read<ScannedBooks>().books;
+    }
+
     List ids = [];
     for(var i=0; i<books.length; i++) {
       ids.add(books[i]["id"]);
@@ -62,7 +71,7 @@ class API {
     String content = '{"ids":$ids, "available":${!books[0]["available"]}, "name":"$name"}';
     var res = await http.post("${cfg.get("host")}/update", body: content);
     print("updating books was a ${res.body}");
-    books.clear();
+    context.read<ScannedBooks>().clear();
   }
 
   Future<int> addBook(String title, String author) async {

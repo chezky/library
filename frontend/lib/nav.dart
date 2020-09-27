@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/add.dart';
+import 'package:frontend/api.dart';
 import 'package:frontend/home.dart';
 import 'package:frontend/search.dart';
 import 'package:nfc_in_flutter/nfc_in_flutter.dart';
@@ -12,6 +13,7 @@ class Nav extends StatefulWidget {
 
 class _NavState extends State<Nav> {
   final _navigatorKey = GlobalKey<NavigatorState>();
+  StreamSubscription<NDEFMessage> _stream;
   int _page = 0;
 
   Widget _bottomNav() {
@@ -31,20 +33,30 @@ class _NavState extends State<Nav> {
         });
         switch(index) {
           case 0:
+            _read();
             _navigatorKey.currentState.pushNamed('/home');
             break;
           case 1:
+            _pause();
             _navigatorKey.currentState.pushNamed('/search');
             break;
           case 2:
+            _pause();
             _navigatorKey.currentState.pushNamed('/add');
             break;
           default:
+            _read();
             _navigatorKey.currentState.pushNamed('/home');
             break;
         }
       },
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _read();
   }
 
   @override
@@ -79,5 +91,35 @@ class _NavState extends State<Nav> {
       ),
       bottomNavigationBar: _bottomNav(),
     );
+  }
+
+  _read() async{
+    try {
+      _stream.isPaused;
+      print("resuming paused stream...");
+      _stream.resume();
+      return;
+    } on NoSuchMethodError catch(e) {
+      print("no stream yet, starting...");
+    }
+
+    _stream = NFC.readNDEF(
+      once: false,
+      throwOnUserCancel: false,
+    ).listen((NDEFMessage message) {
+      try {
+        API(context).getBookByID(message.payload);
+      } on NoSuchMethodError catch (e) {
+        print("error but its caught");
+      }
+    }, onError: (e) {
+      print("error reading $e");
+      // Check error handling guide below
+    });
+  }
+
+  _pause() async {
+    print("Pausing stream...");
+    _stream.pause();
   }
 }

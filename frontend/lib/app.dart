@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/nav.dart';
+import 'package:provider/provider.dart';
 
+import 'models/scannedBooks.dart';
 class Library extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -12,7 +14,12 @@ class Library extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       debugShowCheckedModeBanner: false,
-      home: Nav(),
+      home: MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (context) => ScannedBooks()),
+        ],
+        child: Nav(),
+      ),
     );
   }
 }
