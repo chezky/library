@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:library_frontend/add_scan.dart';
-import 'package:library_frontend/models/book_list.dart';
+import 'package:library_frontend/dialogs/delete.dart';
+import 'dialogs/add_scan.dart';
+import 'models/book_list.dart';
+import 'package:library_frontend/models/books_scanned.dart';
 import 'package:provider/provider.dart';
 
 import 'api.dart';
@@ -28,7 +30,7 @@ class _ListPageState extends State<ListPage> {
     return Column (
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
+        const Text(
           "Customer:",
           style: TextStyle(
             fontSize: 16,
@@ -36,7 +38,7 @@ class _ListPageState extends State<ListPage> {
         ),
         Text(
           customer,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 12,
           ),
         ),
@@ -66,34 +68,79 @@ class _ListPageState extends State<ListPage> {
   }
 
   Widget _tile(int idx, bl) {
-    return ExpansionTile(
-      title: Text(
-        bl["title"],
-      ),
-      subtitle: Text(
-        bl["author"],
-      ),
-      leading: Icon(
-        Icons.circle,
-        color: bl["available"] ? Colors.green : Colors.red,
-      ),
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            if (!bl["available"]) _checkedOutOwner(bl["customer"] ?? ""),
-            if(bl["time_stamp"] != 0) _checkedOutDate(bl["time_stamp"]),
-            IconButton(
-              icon: const Icon(
-                Icons.scanner_outlined,
+    return Dismissible(
+      key: Key("${bl["id"]}_$idx}"),
+      background: Container(color: Colors.red),
+      confirmDismiss: (DismissDirection direction) async {
+        return await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Confirm"),
+              content: Text('Are you sure you wish to delete ${bl["title"]} ?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true),
+                  child: const Text(
+                    'Delete',
+                    style: TextStyle(
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      onDismissed: (direction){
+        context.read<BookList>().remove(bl);
+        API(context).deleteBook(bl["id"]);
+      },
+      child: ExpansionTile(
+        title: Text(
+          bl["title"],
+        ),
+        subtitle: Text(
+          bl["author"],
+        ),
+        leading: Icon(
+          Icons.circle,
+          color: bl["available"] ? Colors.green : Colors.red,
+        ),
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              if (!bl["available"]) _checkedOutOwner(bl["customer"] ?? ""),
+              if(bl["time_stamp"] != 0) _checkedOutDate(bl["time_stamp"]),
+              IconButton(
+                icon: const Icon(
+                  Icons.scanner_outlined,
+                ),
+                onPressed: () {
+                  showDialog(context: context, builder: (context) => AddScanDialog(title: bl["title"], id: bl["id"]));
+                },
               ),
-              onPressed: () {
-                showDialog(context: context, builder: (context) => AddScanDialog(title: bl["title"], id: bl["id"]));
-              },
-            ),
-          ],
-        )
-      ],
+              if (bl["available"]) IconButton(
+                onPressed: () => {
+                  context.read<BooksScanned>().add(bl)
+                },
+                icon: Icon(Icons.add_shopping_cart_rounded),
+              ),
+            ],
+          )
+        ],
+      ),
     );
   }
 
@@ -161,13 +208,13 @@ class _ListPageState extends State<ListPage> {
                         case "checked":
                           return context.watch<BookList>().books.isNotEmpty ? !bl.books[idx]["available"] ? _tile(idx, bl.books[idx]) : Container() : Center(child: Text('No Results'));
                         case "due":
-                          return context.watch<BookList>().books.isNotEmpty ? (bl.books[idx]["time_stamp"] * 1000) + 1629331200 > DateTime.now().millisecondsSinceEpoch.toInt() ? _tile(idx, bl.books[idx]) : Container() : Center(child: Text('No Results'));
+                          return context.watch<BookList>().books.isNotEmpty ? ((bl.books[idx]["time_stamp"] * 1000) + 1629331200 < DateTime.now().millisecondsSinceEpoch.toInt() && !bl.books[idx]["available"]) ? _tile(idx, bl.books[idx]) : Container() : Center(child: Text('No Results'));
                       }
                       return Text('No Results');
                     },
                   ),
                   // Builds 1000 ListTiles
-                  childCount: context.watch<BookList>().books.isNotEmpty ? context.read<BookList>().books.length-1 : 1,
+                  childCount: context.watch<BookList>().books.isNotEmpty ? context.read<BookList>().books.length : 1,
                 ),
               ),
             ],
@@ -178,9 +225,5 @@ class _ListPageState extends State<ListPage> {
   }
   int _formatDate(int date) {
     return DateTime.fromMillisecondsSinceEpoch(date * 1000).difference(DateTime.now()).inDays.toInt() * -1;
-    // final DateFormat formatter = DateFormat('yyyy-MM-dd');
-    // final String formatted = formatter.format(now);
-    // return formatted; // something like 2013-04-20
   }
-
 }

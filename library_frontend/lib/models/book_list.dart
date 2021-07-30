@@ -11,6 +11,11 @@ class BookList extends ChangeNotifier {
     notifyListeners();
   }
 
+  void remove(b) {
+    _books.remove(b);
+    notifyListeners();
+  }
+
   void clear() {
     _books.clear();
     // This call tells the widgets that are listening to this model to rebuild.

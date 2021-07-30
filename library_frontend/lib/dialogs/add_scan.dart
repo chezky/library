@@ -124,18 +124,4 @@ class _AddScanDialogState extends State<AddScanDialog> with TickerProviderStateM
       }
     );
   }
-
-  // _read() async {
-  //   NfcManager.instance.startSession(
-  //       onDiscovered: (NfcTag tag) async {
-  //         print('data is ${utf8.decode(tag.data["ndef"]["cachedMessage"]["records"][0]["payload"]).substring(3)}');
-  //         // NfcManager.instance.stopSession();
-  //       }
-  //   );
-  // }
-
-
-  _skip() {
-
-  }
 }

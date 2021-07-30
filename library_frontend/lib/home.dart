@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:library_frontend/api.dart';
 import 'package:library_frontend/list.dart';
-import 'package:library_frontend/models/book_list.dart';
+import 'models/book_list.dart';
 import 'package:library_frontend/update.dart';
 import 'package:library_frontend/new_book.dart';
 import 'package:provider/provider.dart';
@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _infoContainer("Overdue", "${bl.books.where((e) => (e["time_stamp"] * 1000) + 1629331200 > DateTime.now().millisecondsSinceEpoch.toInt()).length}", Colors.red[400], "due"),
+                  _infoContainer("Overdue", "${bl.books.where((e) => ((e["time_stamp"] * 1000) + 1629331200 < DateTime.now().millisecondsSinceEpoch.toInt()) && !e["available"]).length}", Colors.red[400], "due"),
                   _infoContainer("Total", bl.books.length.toString(), Colors.purple[300], "all"),
                 ],
               ),

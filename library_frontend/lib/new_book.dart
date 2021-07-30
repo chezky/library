@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:library_frontend/add_scan.dart';
+import 'dialogs/add_scan.dart';
 import 'package:library_frontend/api.dart';
 
 class AddBookPage extends StatefulWidget {

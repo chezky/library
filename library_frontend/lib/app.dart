@@ -14,6 +14,7 @@ class _LibraryState extends State<Library> {
   Widget build(BuildContext build) {
     return MaterialApp(
       home: HomePage(),
+      debugShowCheckedModeBanner: false,
     );
   }
 }

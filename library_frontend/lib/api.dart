@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
-import 'package:library_frontend/models/book_list.dart';
+import 'models/book_list.dart';
 import 'package:library_frontend/models/books_scanned.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -27,7 +27,10 @@ class API {
     }
 
     Map dr = jsonDecode(res.body);
-    context.read<BooksScanned>().add(dr);
+    if(dr["available"]) {
+      context.read<BooksScanned>().add(dr);
+    }
+    return dr;
   }
 
   getByTitle(String query) async {
@@ -61,28 +64,26 @@ class API {
     context.read<BookList>().add(dcdc);
   }
 
-  updateBooks(String name, List books) async {
-    if (books.isEmpty) {
-      books = context.read<BooksScanned>().books;
-    }
+  updateBooks(String name) async {
+    var books = context.read<BooksScanned>().books;
 
     List ids = [];
     for(var i=0; i<books.length; i++) {
       ids.add(books[i]["id"]);
     }
 
-    name = books[0]["available"] ? name : "";
-
-    String content = '{"ids":$ids, "available":${!books[0]["available"]}, "name":"$name"}';
+    String content = '{"ids":$ids, "available":false, "name":"${_parseWord(name)}"}';
     var url = Uri.parse("${cfg.get("host")}/update");
 
     var res = await http.post(url, body: content);
     print("updating books was a ${res.body}");
     context.read<BooksScanned>().clear();
+
+    getAllBooks();
   }
 
   Future<int> addBook(String title, String author) async {
-    String content = '{"title":"$title", "author":"$author"}';
+    String content = '{"title":"${_parseWord(title)}", "author":"${_parseWord(author)}"}';
     print('host is: ${cfg.get("host")}');
     var url = Uri.parse("${cfg.get("host")}/new");
     print('url is: $url');
@@ -92,4 +93,52 @@ class API {
     getAllBooks();
     return int.parse(res.body);
   }
+
+  deleteBook(int id) async {
+    String content = '{"id":$id}';
+    var url = Uri.parse("${cfg.get("host")}/delete");
+    print('url is: $url');
+
+    var res = await http.post(url, body: content);
+    print("res for delete book is: ${res.body}");
+    getAllBooks();
+  }
+
+  returnBook(int id) async {
+    String content = '{"available":true, "id":$id}';
+    var url = Uri.parse("${cfg.get("host")}/checkout");
+    print('url is: $url');
+
+    var res = await http.post(url, body: content);
+    print("res for return book is: ${res.body}");
+    getAllBooks();
+  }
+
+  String _parseWord(String txt) {
+    String newTxt="";
+    List<String> badWords = ["or", "are", "on", "a", "the", "in"];
+
+    List<String> words = txt.trim().split(" ");
+    for(var i=0; i<words.length; i++) {
+      if (i == 0) {
+        newTxt = words[i][0].toUpperCase() + words[i].substring(1);
+      } else {
+        bool bad = false;
+        for(var j=0; j<badWords.length; j++) {
+          print(j);
+          if (words[i].toLowerCase() == badWords[j]) {
+            bad = true;
+          }
+        }
+        if(!bad) {
+          print("word is ${words[i]}");
+          words[i] = words[i][0].toUpperCase() + words[i].substring(1);
+        }
+        newTxt ='$newTxt ${words[i]}';
+      }
+    }
+
+    return newTxt;
+  }
 }
+
