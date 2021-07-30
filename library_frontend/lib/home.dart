@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:library_frontend/api.dart';
+import 'package:library_frontend/list.dart';
+import 'package:library_frontend/models/book_list.dart';
 import 'package:library_frontend/update.dart';
+import 'package:library_frontend/new_book.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -9,20 +14,30 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  @override
+  void initState() {
+    API(context).getAllBooks();
+    super.initState();
+  }
+
   Widget _topIcons() {
     return Container(
       padding: const EdgeInsets.fromLTRB(10,20,10,0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
+          // IconButton(
+          //   color: Colors.grey,
+          //   onPressed: () => {
+          //     Navigator.push(context, MaterialPageRoute(builder: (context) => const AddBookPage()))
+          //   },
+          //   icon: const Icon(Icons.settings_rounded),
+          // ),
           IconButton(
             color: Colors.grey,
-            onPressed: () => {},
-            icon: const Icon(Icons.settings_rounded),
-          ),
-          IconButton(
-            color: Colors.grey,
-            onPressed: () => {},
+            onPressed: () => {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const AddBookPage()))
+            },
             icon: const Icon(Icons.add_rounded),
           ),
         ],
@@ -47,30 +62,34 @@ class _HomePageState extends State<HomePage> {
   Widget _infoPanel() {
     return Container(
       padding: const EdgeInsets.fromLTRB(0,0,0,0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Row(
+      child: Consumer<BookList>(
+        builder: (BuildContext context, BookList bl, dynamic c) {
+          return Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              _infoContainer("Checked Out", "10", Colors.orange[400]),
-              _infoContainer("Available", "40", Colors.green[400]),
-            ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _infoContainer("Checked Out", "${bl.books.where((e) => e["available"] == false).length}", Colors.orange[400], "checked"),
+                  _infoContainer("Available", "${bl.books.where((e) => e["available"] == true).length}", Colors.green[400], "available"),
+                ],
 
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _infoContainer("Overdue", "4", Colors.red[400]),
-              _infoContainer("Total", "50", Colors.purple[300]),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _infoContainer("Overdue", "${bl.books.where((e) => (e["time_stamp"] * 1000) + 1629331200 > DateTime.now().millisecondsSinceEpoch.toInt()).length}", Colors.red[400], "due"),
+                  _infoContainer("Total", bl.books.length.toString(), Colors.purple[300], "all"),
+                ],
+              ),
             ],
-          ),
-        ],
+          );
+        },
       ),
     );
   }
 
-  Widget _infoContainer(String title, body, Color? color) {
+  Widget _infoContainer(String title, body, Color? color, String use) {
     return Container(
       margin: const EdgeInsets.fromLTRB(2,30,2,2),
       child: Column(
@@ -86,7 +105,9 @@ class _HomePageState extends State<HomePage> {
             height: 100,
             minWidth: 150,
             color: color,
-            onPressed: () => {},
+            onPressed: () => {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ListPage(use: use,)))
+            },
             child: Text(
               body,
               style: const TextStyle(
